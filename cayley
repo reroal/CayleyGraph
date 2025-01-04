@@ -1,0 +1,42 @@
+n := 5;
+p := 3;
+
+print "Characteristic:" , p;
+print "Dimension: ", n;
+
+Field<g> := FiniteField(p^n);
+F := Set(Field) diff {0};
+Fp := PrimeField(Field);
+
+hypercube_field := function()
+	res := [];
+	for i in Field do
+		rev := Reverse(Eltseq(i));
+		Append(~res, rev);
+	end for;
+	return Sort(res);
+end function;
+
+cube:= hypercube_field();
+
+Func := function(y)
+	w := Field!(y^2);
+	return w;
+end function;
+
+edges := function(f)
+	res := [];
+	for i in F do
+		for j in F do
+			if Trace(f(i-j)) ne 0 then
+				Append(~res, {i,j});
+			end if;
+		end for;
+	end for;
+	return res;
+end function;
+ 
+E := edges(Func);
+
+G := Graph< F | Set(E)>;
+AutomorphismGroup(G);
